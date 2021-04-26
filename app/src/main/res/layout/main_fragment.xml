@@ -38,6 +38,47 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="45dp"
+                android:clipToPadding="false"
+                android:scrollbars="none"
+                android:layout_marginTop="@dimen/distance_between_widgets"
+                android:layout_marginBottom="@dimen/distance_between_widgets"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_view">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/day_before_yesterday"
+                        style="@style/MyChipStyle"
+                        android:text="@string/day_before_yesterday" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/yesterday"
+                        style="@style/MyChipStyle"
+                        android:text="@string/yesterday" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/today"
+                        style="@style/MyChipStyle"
+                        android:checked="true"
+                        android:text="@string/today" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
             <com.example.nasaappkotlin.util.EquilateralImageView
                 android:id="@+id/image_view"
                 android:layout_width="match_parent"

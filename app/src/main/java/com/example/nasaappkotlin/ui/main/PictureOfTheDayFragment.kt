@@ -13,24 +13,32 @@ import androidx.lifecycle.ViewModelProviders
 import coil.api.load
 import com.example.nasaappkotlin.MainActivity
 import com.example.nasaappkotlin.R
-import com.example.nasaappkotlin.chips.ChipsFragment
+import com.example.nasaappkotlin.settings.SettingsFragment
+import com.example.nasaappkotlin.databinding.MainFragmentBinding
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import geekbarains.material.ui.picture.BottomNavigationDrawerFragment
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.main_fragment.*
+import java.text.SimpleDateFormat
+import java.util.*
 
-
+private const val SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT"
+private const val VIEW_PAGER_FRAGMENT = "VIEW_PAGER_FRAGMENT"
+private const val SIZE_PAGES = 10
 class PictureOfTheDayFragment : Fragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var binding: MainFragmentBinding
+    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProviders.of(this).get(PictureOfTheDayViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData()
+        viewModel.getData(null)
             .observe(this@PictureOfTheDayFragment, Observer<PictureOfTheDayData> { renderData(it) })
     }
 
@@ -38,7 +46,8 @@ class PictureOfTheDayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        binding = MainFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +59,7 @@ class PictureOfTheDayFragment : Fragment() {
             })
         }
         setBottomAppBar(view)
-
+        setSelectionChips()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -61,7 +70,8 @@ class PictureOfTheDayFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.app_bar_fav -> toast("Favourite")
-            R.id.app_bar_settings -> activity?.supportFragmentManager?.beginTransaction()?.add(R.id.container, ChipsFragment())?.addToBackStack(null)?.commit()
+            R.id.app_bar_settings -> activity?.supportFragmentManager?.beginTransaction()?.add(R.id.container, SettingsFragment())?.addToBackStack(
+                SETTINGS_FRAGMENT)?.commit()
             android.R.id.home -> {
                 activity?.let {
                     BottomNavigationDrawerFragment().show(it.supportFragmentManager, "tag")
@@ -69,6 +79,31 @@ class PictureOfTheDayFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setSelectionChips() {
+        binding.chipGroup.setOnCheckedChangeListener { group, checkedId ->
+            group.findViewById<Chip>(checkedId)?.let { chip ->
+                when(chip) {
+                    binding.today -> {
+                        viewModel.getData(null).observe(this, { renderData(it) })
+                    }
+                    binding.yesterday -> {
+                        viewModel.getData(formatter.format(previousDay(1)))
+                                .observe(this, { renderData(it) })
+                    }
+                    binding.dayBeforeYesterday -> {
+                        viewModel.getData(formatter.format(previousDay(2)))
+                                .observe(this, { renderData(it) })
+                    }
+                }
+            }
+        }
+    }
+    private fun previousDay(daysAgo: Int): Date {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.DATE, -daysAgo)
+        return cal.time
     }
 
     private fun renderData(data: PictureOfTheDayData) {
