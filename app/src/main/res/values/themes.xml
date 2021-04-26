@@ -13,4 +13,43 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="MyChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="textAllCaps">true</item>
+    </style>
+    <style name="HeaderText">
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/padding_to_screen_edge</item>
+    </style>
+    <style name="Mars">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/colorPrimaryMars</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariantMars</item>
+        <item name="colorOnPrimary">@color/colorOnPrimaryMars</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/colorSecondaryMars</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariantMars</item>
+        <item name="colorOnSecondary">@color/colorOnSecondaryMars</item>
+
+        <item name="android:statusBarColor">@color/colorPrimaryVariantMars</item>
+        <item name="colorSecondaryAlpha40">@color/colorSecondaryMarsAlpha40</item>
+    </style>
+    <style name="Moon">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/colorPrimaryMoon</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariantMoon</item>
+        <item name="colorOnPrimary">@color/colorOnPrimaryMoon</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/colorSecondaryMoon</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariantMoon</item>
+        <item name="colorOnSecondary">@color/colorOnSecondaryMoon</item>
+
+        <item name="android:statusBarColor">@color/colorPrimaryVariantMoon</item>
+        <item name="colorSecondaryAlpha40">@color/colorSecondaryMoonAlpha40</item>
+    </style>
 </resources>

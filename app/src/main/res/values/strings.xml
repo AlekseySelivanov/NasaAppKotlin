@@ -8,4 +8,11 @@
     <string name="search">Search</string>
     <string name="item1">На экран 1</string>
     <string name="item2">На экран 2</string>
+    <string name="day_before_yesterday">Day before yesterday</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="today">Today</string>
+    <string name="select_application_theme">Select application theme</string>
+    <string name="space">Space</string>
+    <string name="moon">Moon</string>
+    <string name="mars">Mars</string>
 </resources>
