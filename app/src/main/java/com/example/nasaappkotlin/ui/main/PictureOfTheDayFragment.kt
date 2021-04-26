@@ -25,8 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT"
-private const val VIEW_PAGER_FRAGMENT = "VIEW_PAGER_FRAGMENT"
-private const val SIZE_PAGES = 10
+
 class PictureOfTheDayFragment : Fragment() {
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
