@@ -1,4 +1,4 @@
-package geekbarains.material.ui.picture
+package com.example.nasaappkotlin.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater

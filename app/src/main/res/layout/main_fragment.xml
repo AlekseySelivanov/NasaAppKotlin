@@ -37,6 +37,26 @@
                     android:layout_height="wrap_content"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_pager_height"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_view_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/text_date_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_pager"
+                app:layout_constraintVertical_bias="0.0" />
 
             <HorizontalScrollView
                 android:id="@+id/horizontal_scroll"
@@ -56,6 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:visibility="invisible"
                     app:selectionRequired="true"
                     app:singleSelection="true">
 
@@ -83,6 +104,7 @@
                 android:id="@+id/image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:layout_gravity="center"
                 android:contentDescription="@string/photo_of_the_day_stub"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -100,10 +122,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:backgroundTint="@color/colorPrimary"
         app:fabAlignmentMode="center"
         app:hideOnScroll="true"
         app:layout_scrollFlags="scroll|enterAlways"
+        app:backgroundTint="?attr/colorSecondaryVariant"
         app:navigationIcon="@drawable/ic_hamburger_menu_bottom_bar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

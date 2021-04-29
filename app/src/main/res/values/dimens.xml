@@ -5,4 +5,6 @@
     <dimen name="stroke_width">32dp</dimen>
     <dimen name="stroke_height">1dp</dimen>
     <dimen name="description_behavior_peekHeight">100dp</dimen>
+    <dimen name="view_pager_height">400dp</dimen>
+    <dimen name="text_date_size">25sp</dimen>
 </resources>

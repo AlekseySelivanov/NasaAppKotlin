@@ -4,21 +4,23 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import coil.api.load
 import com.example.nasaappkotlin.MainActivity
 import com.example.nasaappkotlin.R
 import com.example.nasaappkotlin.settings.SettingsFragment
 import com.example.nasaappkotlin.databinding.MainFragmentBinding
+import com.example.nasaappkotlin.viewpager.ViewPagerAdapter
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
-import geekbarains.material.ui.picture.BottomNavigationDrawerFragment
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.text.SimpleDateFormat
@@ -28,6 +30,7 @@ private const val SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT"
 
 class PictureOfTheDayFragment : Fragment() {
 
+    private lateinit var textDate: TextView
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var binding: MainFragmentBinding
     private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -37,8 +40,28 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getData(null)
-            .observe(this@PictureOfTheDayFragment, Observer<PictureOfTheDayData> { renderData(it) })
+        val currentData = Date()
+        var date = "${currentData.year}-${currentData.month}-${currentData.day}"
+
+        //Определяем первональную позицию
+        view_pager.currentItem = 1
+        //Добавляем листенер на свайп ViewPаger чтобы обновлять текст в BottomSheetBehavior
+        view_pager.addOnPageChangeListener(object  : ViewPager.OnPageChangeListener {
+            override fun onPageSelected(position: Int) {
+                when(position) {
+                    0 -> date = "${currentData.year}-${currentData.month}-${currentData.day-1}"
+                    1 -> date = "${currentData.year}-${currentData.month}-${currentData.day}"
+                }
+                viewModel.getData(date).observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
+                textDate.text = date
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+        viewModel.getData(date)
+            .observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
+        textDate.text = date
     }
 
     override fun onCreateView(
@@ -51,6 +74,7 @@ class PictureOfTheDayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view_pager.adapter = ViewPagerAdapter(childFragmentManager)
         setBottomSheetBehavior(view.findViewById(R.id.bottom_sheet_container))
         input_layout.setEndIconOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
@@ -59,6 +83,7 @@ class PictureOfTheDayFragment : Fragment() {
         }
         setBottomAppBar(view)
         setSelectionChips()
+        textDate = view.findViewById(R.id.text_view_date)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,15 +110,15 @@ class PictureOfTheDayFragment : Fragment() {
             group.findViewById<Chip>(checkedId)?.let { chip ->
                 when(chip) {
                     binding.today -> {
-                        viewModel.getData(null).observe(this, { renderData(it) })
+                        viewModel.getData(null).observe(viewLifecycleOwner, { renderData(it) })
                     }
                     binding.yesterday -> {
                         viewModel.getData(formatter.format(previousDay(1)))
-                                .observe(this, { renderData(it) })
+                                .observe(viewLifecycleOwner, { renderData(it) })
                     }
                     binding.dayBeforeYesterday -> {
                         viewModel.getData(formatter.format(previousDay(2)))
-                                .observe(this, { renderData(it) })
+                                .observe(viewLifecycleOwner, { renderData(it) })
                     }
                 }
             }
@@ -131,7 +156,7 @@ class PictureOfTheDayFragment : Fragment() {
             }
             is PictureOfTheDayData.Error -> {
                 //showError(data.error.message)
-                toast(data.error.message)
+              //  toast(data.error.message)
             }
         }
     }
