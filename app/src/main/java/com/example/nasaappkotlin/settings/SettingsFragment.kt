@@ -1,103 +1,86 @@
 package com.example.nasaappkotlin.settings
 
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.getIntent
+import android.content.Intent.getIntentOld
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.nasaappkotlin.R
-import com.example.nasaappkotlin.databinding.FragmentChipsBinding
+import com.example.nasaappkotlin.ui.main.PictureOfTheDayFragment
+import com.google.android.material.chip.ChipGroup
 
-const val SETTINGS_SHARED_PREFERENCE = "SETTINGS_SHARED_PREFERENCE"
-const val THEME_NAME_SHARED_PREFERENCE = "THEME_NAME_SHARED_PREFERENCE"
-const val THEME_RES_ID = "THEME_RES_ID"
-const val SPACE = "SPACE"
-const val MARS = "MARS"
-const val MOON = "MOON"
 
 class SettingsFragment : Fragment() {
 
-    private lateinit var binding: FragmentChipsBinding
-    private lateinit var themeName: String
+    private val NAME_SHARED_PREFERENCE = "LOGIN"
+    private val APP_THEME = "APP_THEME"
+    private val MARS_THEME = 0
+    private val SPACE_THEME = 1
+    private val MOON_THEME = 2
 
-
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        setSharedPreferenceSettings()
-        binding.marsTheme.apply {
-            setOnClickListener {
-                if (themeName != MARS) {
-                    saveThemeSettings(MARS, R.style.Mars)
-                    activity?.recreate()
-                }
-            }
-        }
-        binding.spaceTheme.apply {
-            setOnClickListener {
-                if (themeName != SPACE) {
-                    saveThemeSettings(SPACE, R.style.Theme_NasaAppKotlin)
-                    activity?.recreate()
-                }
-            }
-        }
-        binding.moonTheme.apply {
-            setOnClickListener {
-                if (themeName != MOON) {
-                    saveThemeSettings(MOON, R.style.Moon)
-                    activity?.recreate()
-                }
-            }
-        }
-
+    companion object {
+        @JvmStatic
+        fun newInstance() = SettingsFragment()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val resIdTheme =
-            requireActivity().getSharedPreferences(SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-                .getInt(THEME_RES_ID, R.style.Theme_NasaAppKotlin)
-        val inflaterNewTheme = LayoutInflater.from(ContextThemeWrapper(context, resIdTheme))
-        binding = FragmentChipsBinding.inflate(inflaterNewTheme, container, false)
-        return binding.root
+        activity?.setTheme(getAppTheme(R.style.Theme_NasaAppKotlin))
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
-    private fun saveThemeSettings(themeName: String, id: Int) {
-        this.themeName = themeName
-        activity?.let {
-            with(it.getSharedPreferences(SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE).edit()) {
-                putString(THEME_NAME_SHARED_PREFERENCE, themeName).apply()
-                putInt(THEME_RES_ID, id).apply()
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initChipGroup()
+    }
+    //Получить тему
+    private fun getAppTheme(codeStyle: Int): Int {
+        return codeStyleToStyleId(getCodeStyle(codeStyle))
+    }
+    //Ищем тему по номеру
+    private fun codeStyleToStyleId(codestyle: Int): Int {
+        return when (codestyle) {
+            MARS_THEME -> R.style.Mars
+            SPACE_THEME -> R.style.Theme_NasaAppKotlin
+            MOON_THEME -> R.style.Moon
+            else -> R.style.Mars
         }
     }
-
-    private fun setSharedPreferenceSettings() {
-        activity?.let {
-            themeName =
-                it.getSharedPreferences(SETTINGS_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-                    .getString(THEME_NAME_SHARED_PREFERENCE, SPACE).toString()
-            when(themeName) {
-                MOON -> {
-                    binding.moonTheme.isChecked = true
-                }
-                MARS -> {
-                    binding.marsTheme.isChecked = true
-                }
-                else -> {
-                    binding.spaceTheme.isChecked = true
-                }
-            }
-        }
+    //Ищем код
+    private fun getCodeStyle(codestyle: Int): Int {
+        val sharedPref: SharedPreferences? = activity?.getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE)
+        return sharedPref?.getInt(APP_THEME, codestyle)!!
     }
 
+    //Инициализируем Chip
+    private fun initChipGroup() {
+        clickedChip(view?.findViewById(R.id.mars_theme), MARS_THEME)
+        clickedChip(view?.findViewById(R.id.space_theme), SPACE_THEME)
+        clickedChip(view?.findViewById(R.id.moon_theme), MOON_THEME)
+        val chipGroup = view?.findViewById<ChipGroup>(R.id.chip_group)
+        chipGroup?.isSelectionRequired = true;
+    }
+    //Обработка нажатия Chip
+    private fun clickedChip(chip: View?, codestyle: Int) {
+        chip?.setOnClickListener {
+            setAppTheme(codestyle)
+            activity?.recreate()
 
-
+        }
+    }
+    //Записываем тему
+    private fun setAppTheme(codestyle: Int) {
+        val sharedPref: SharedPreferences? = activity?.getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE)
+        val editor = sharedPref?.edit()
+        editor?.putInt(APP_THEME, codestyle)
+        editor?.apply()
+    }
     }
 
