@@ -5,13 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import coil.api.load
 import com.example.nasaappkotlin.R
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayData
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayViewModel
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.main_fragment.*
 import java.util.*
 
 class TodayFragment : Fragment() {
@@ -29,9 +31,9 @@ class TodayFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val currentDate = Date()
-        val date = "${currentDate.year}-${currentDate.month}-${currentDate.day}"
-        viewModel.getData(date).observe(viewLifecycleOwner, Observer<PictureOfTheDayData> { renderData(it) })
+        viewModel.getData(null).observe(viewLifecycleOwner, {
+            renderData(it)
+        })
     }
 
     private fun renderData(data: PictureOfTheDayData) {
@@ -39,12 +41,22 @@ class TodayFragment : Fragment() {
             is PictureOfTheDayData.Success -> {
                 val serverResponseData = data.serverResponseData
                 val url = serverResponseData.url
+                val explanation = serverResponseData.explanation
+                val title = serverResponseData.title
                 if (url.isNullOrEmpty()) {
                     //Отображение ошибки
                 } else {
-                    val imageView = view?.findViewById<ImageView>(R.id.image_view_today);
+                    val imageView = view?.findViewById<ImageView>(R.id.image_view_today)
                     imageView?.load(url) {
                         lifecycle(this@TodayFragment)
+                    }
+                    val textView = view?.findViewById<TextView>(R.id.bottom_sheet_description)
+                    if (!explanation.isNullOrEmpty()) {
+                        textView?.text = explanation
+                    }
+                    val textView2 = view?.findViewById<TextView>(R.id.bottom_sheet_description_header)
+                    if (!title.isNullOrEmpty()) {
+                        textView2?.text = title
                     }
                 }
             }

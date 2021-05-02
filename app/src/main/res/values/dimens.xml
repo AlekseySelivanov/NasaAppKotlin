@@ -5,6 +5,13 @@
     <dimen name="stroke_width">32dp</dimen>
     <dimen name="stroke_height">1dp</dimen>
     <dimen name="description_behavior_peekHeight">100dp</dimen>
-    <dimen name="view_pager_height">400dp</dimen>
+    <dimen name="view_pager_height">500dp</dimen>
     <dimen name="text_date_size">25sp</dimen>
+    <dimen name="fab_cradle_rounded_corner_radius">50dp</dimen>
+    <dimen name="collapsing_toolbar_app_bar_height">180dp</dimen>
+    <dimen name="collapsing_toolbar_fab_margin">16dp</dimen>
+    <dimen name="collapsing_toolbar_text_margin">16dp</dimen>
+    <dimen name="text_input_layout_width">0dp</dimen>
+    <dimen name="wiki_padding_start">5dp</dimen>
+    <dimen name="wiki_padding_end">8dp</dimen>
 </resources>

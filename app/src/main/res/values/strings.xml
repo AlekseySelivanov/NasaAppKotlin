@@ -15,4 +15,9 @@
     <string name="space">Space</string>
     <string name="moon">Moon</string>
     <string name="mars">Mars</string>
+
+
+    <string name="day_before_yesterday_text">Day before yesterday</string>
+    <string name="yesterday_text">Yesterday</string>
+    <string name="today_text">Today</string>
 </resources>
