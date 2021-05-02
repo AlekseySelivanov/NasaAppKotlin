@@ -11,6 +11,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="color_gray">#66000000</color>
+    <color name="yellow">#FFFF00</color>
 
     <color name="colorPrimaryMars">#ef6c00</color>
     <color name="colorPrimaryVariantMars">#b53d00</color>

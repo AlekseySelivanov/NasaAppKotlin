@@ -4,17 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/main2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp">
-
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/wiki_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_wikipedia" />
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -24,19 +28,22 @@
                 app:counterEnabled="true"
                 app:counterMaxLength="20"
                 app:endIconCheckable="true"
-                app:endIconDrawable="@drawable/ic_wikipedia"
+                android:paddingStart="@dimen/wiki_padding_end"
+                android:paddingLeft="@dimen/wiki_padding_start"
+                android:paddingEnd="@dimen/wiki_padding_end"
+                android:paddingRight="@dimen/wiki_padding_end"
                 app:endIconMode="custom"
                 app:helperText="@string/wiki_helper_text"
-                app:layout_constraintBottom_toTopOf="@+id/image_view"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
@@ -44,78 +51,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_view_date"
+                app:layout_constraintTop_toBottomOf="@id/input_layout" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/text_date_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_pager"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@id/input_layout"
+                app:tabRippleColor="@color/yellow" />
 
-            <HorizontalScrollView
-                android:id="@+id/horizontal_scroll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="45dp"
-                android:clipToPadding="false"
-                android:scrollbars="none"
-                android:layout_marginTop="@dimen/distance_between_widgets"
-                android:layout_marginBottom="@dimen/distance_between_widgets"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_view">
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="invisible"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/day_before_yesterday"
-                        style="@style/MyChipStyle"
-                        android:text="@string/day_before_yesterday" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/yesterday"
-                        style="@style/MyChipStyle"
-                        android:text="@string/yesterday" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/today"
-                        style="@style/MyChipStyle"
-                        android:checked="true"
-                        android:text="@string/today" />
-
-                </com.google.android.material.chip.ChipGroup>
-
-            </HorizontalScrollView>
-
-            <com.example.nasaappkotlin.util.EquilateralImageView
-                android:id="@+id/image_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:layout_gravity="center"
-                android:contentDescription="@string/photo_of_the_day_stub"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_no_photo_vector" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <include layout="@layout/bottom_sheet_layout" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
@@ -124,6 +70,7 @@
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
         app:hideOnScroll="true"
+        app:fabCradleRoundedCornerRadius="@dimen/fab_cradle_rounded_corner_radius"
         app:layout_scrollFlags="scroll|enterAlways"
         app:backgroundTint="?attr/colorSecondaryVariant"
         app:navigationIcon="@drawable/ic_hamburger_menu_bottom_bar" />
@@ -137,5 +84,6 @@
         app:layout_anchor="@id/bottom_app_bar"
         app:srcCompat="@drawable/ic_plus_fab"
         app:tint="#FFFFFF" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

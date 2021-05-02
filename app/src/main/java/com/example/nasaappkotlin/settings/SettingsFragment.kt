@@ -2,85 +2,113 @@ package com.example.nasaappkotlin.settings
 
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.getIntent
-import android.content.Intent.getIntentOld
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.nasaappkotlin.MainActivity
 import com.example.nasaappkotlin.R
-import com.example.nasaappkotlin.ui.main.PictureOfTheDayFragment
-import com.google.android.material.chip.ChipGroup
+import com.example.nasaappkotlin.databinding.FragmentSettingsBinding
 
 
+const val SETTINGS_SHARED_PREFERENCES = "SettingsSharedPreferences"
+const val THEME_RES_ID = "ThemeResID"
+private const val THEME_NAME_SHARED_PREFERENCES = "ThemeNameSharedPreferences"
+const val MY_DEFAULT_THEME = 0
+const val MY_CUSTOM_THEME_GREY = 1
+const val My_CUSTOM_THEME_ORANGE = 2
 class SettingsFragment : Fragment() {
 
-    private val NAME_SHARED_PREFERENCE = "LOGIN"
-    private val APP_THEME = "APP_THEME"
-    private val MARS_THEME = 0
-    private val SPACE_THEME = 1
-    private val MOON_THEME = 2
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+    private var currentTheme: Int? = null
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = SettingsFragment()
-    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
-        activity?.setTheme(getAppTheme(R.style.Theme_NasaAppKotlin))
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initChipGroup()
+        initView()
     }
-    //Получить тему
-    private fun getAppTheme(codeStyle: Int): Int {
-        return codeStyleToStyleId(getCodeStyle(codeStyle))
-    }
-    //Ищем тему по номеру
-    private fun codeStyleToStyleId(codestyle: Int): Int {
-        return when (codestyle) {
-            MARS_THEME -> R.style.Mars
-            SPACE_THEME -> R.style.Theme_NasaAppKotlin
-            MOON_THEME -> R.style.Moon
-            else -> R.style.Mars
+    private fun initView() {
+        setSharedPreferencesSettings()
+        binding.spaceTheme.setOnClickListener {
+            if (currentTheme != MY_DEFAULT_THEME) {
+                requireActivity().apply {
+                    setTheme(R.style.Theme_NasaAppKotlin)
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    saveThemeSettings(MY_DEFAULT_THEME, R.style.Theme_NasaAppKotlin)
+                }
+            }
+        }
+        binding.moonTheme.setOnClickListener {
+            if (currentTheme != MY_CUSTOM_THEME_GREY) {
+                requireActivity().apply {
+                    setTheme(R.style.Moon)
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    saveThemeSettings(MY_CUSTOM_THEME_GREY, R.style.Moon)
+                }
+            }
+        }
+        binding.marsTheme.setOnClickListener {
+            if (currentTheme != My_CUSTOM_THEME_ORANGE) {
+                requireActivity().apply {
+                    setTheme(R.style.Mars)
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    saveThemeSettings(My_CUSTOM_THEME_ORANGE, R.style.Mars)
+                }
+            }
         }
     }
-    //Ищем код
-    private fun getCodeStyle(codestyle: Int): Int {
-        val sharedPref: SharedPreferences? = activity?.getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-        return sharedPref?.getInt(APP_THEME, codestyle)!!
-    }
 
-    //Инициализируем Chip
-    private fun initChipGroup() {
-        clickedChip(view?.findViewById(R.id.mars_theme), MARS_THEME)
-        clickedChip(view?.findViewById(R.id.space_theme), SPACE_THEME)
-        clickedChip(view?.findViewById(R.id.moon_theme), MOON_THEME)
-        val chipGroup = view?.findViewById<ChipGroup>(R.id.chip_group)
-        chipGroup?.isSelectionRequired = true;
-    }
-    //Обработка нажатия Chip
-    private fun clickedChip(chip: View?, codestyle: Int) {
-        chip?.setOnClickListener {
-            setAppTheme(codestyle)
-            activity?.recreate()
-
+    private fun setSharedPreferencesSettings() {
+        activity?.let {
+            currentTheme =
+                    it.getSharedPreferences(SETTINGS_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+                            .getInt(THEME_NAME_SHARED_PREFERENCES, MY_DEFAULT_THEME)
+            when (currentTheme) {
+                MY_CUSTOM_THEME_GREY -> {
+                    binding.moonTheme.isChecked = true
+                }
+                My_CUSTOM_THEME_ORANGE -> {
+                    binding.marsTheme.isChecked = true
+                }
+                else -> {
+                    binding.spaceTheme.isChecked = true
+                }
+            }
         }
     }
-    //Записываем тему
-    private fun setAppTheme(codestyle: Int) {
-        val sharedPref: SharedPreferences? = activity?.getSharedPreferences(NAME_SHARED_PREFERENCE, Context.MODE_PRIVATE)
-        val editor = sharedPref?.edit()
-        editor?.putInt(APP_THEME, codestyle)
-        editor?.apply()
+
+    private fun saveThemeSettings(currentTheme: Int, style: Int) {
+        this.currentTheme = currentTheme
+        activity?.let {
+            with(it.getSharedPreferences(SETTINGS_SHARED_PREFERENCES, Context.MODE_PRIVATE).edit()) {
+                putInt(THEME_NAME_SHARED_PREFERENCES, currentTheme).apply()
+                putInt(THEME_RES_ID, style).apply()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
     }
 
