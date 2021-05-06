@@ -8,23 +8,31 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.ChangeBounds
+import androidx.transition.ChangeImageTransform
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import coil.api.load
 import com.example.nasaappkotlin.R
+import com.example.nasaappkotlin.databinding.FragmentTodayBinding
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayData
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayViewModel
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.fragment_today.*
+import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.util.*
 
 class TodayFragment : Fragment() {
 
+    private var isExpanded = false
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_today, container, false)
     }
@@ -36,6 +44,24 @@ class TodayFragment : Fragment() {
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        image_view_today.setOnClickListener {    isExpanded = !isExpanded
+            TransitionManager.beginDelayedTransition(
+                    container, TransitionSet()
+                    .addTransition(ChangeBounds())
+                    .addTransition(ChangeImageTransform()))
+            val params: ViewGroup.LayoutParams = image_view_today.layoutParams
+            params.height =
+                    if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            image_view_today.layoutParams = params
+            image_view_today.scaleType =
+                    if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
+            // Почему-то возникает NPE
+        }
+    }
+
     private fun renderData(data: PictureOfTheDayData) {
         when (data) {
             is PictureOfTheDayData.Success -> {
@@ -44,7 +70,6 @@ class TodayFragment : Fragment() {
                 val explanation = serverResponseData.explanation
                 val title = serverResponseData.title
                 if (url.isNullOrEmpty()) {
-                    //РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РѕС€РёР±РєРё
                 } else {
                     val imageView = view?.findViewById<ImageView>(R.id.image_view_today)
                     imageView?.load(url) {
@@ -61,10 +86,10 @@ class TodayFragment : Fragment() {
                 }
             }
             is PictureOfTheDayData.Loading -> {
-                //Р—Р°РіСЂСѓР·РєР°
+                //загрузка
             }
             is PictureOfTheDayData.Error -> {
-                //РћС€РёР±РєР°
+                //ошибка
             }
         }
     }
