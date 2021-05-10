@@ -12,14 +12,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.api.load
 import com.example.nasaappkotlin.R
+import com.example.nasaappkotlin.databinding.BeforeYesterdayFragmentBinding
+import com.example.nasaappkotlin.databinding.FragmentTodayBinding
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayData
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayViewModel
+import com.example.nasaappkotlin.util.BeginDelayedTransition
 import java.text.SimpleDateFormat
 import java.util.*
 
 class BeforeYesterdayFragment : Fragment() {
-
-
+    private var _binding: BeforeYesterdayFragmentBinding? = null
+    private val binding get() = _binding!!
+    private var isExpanded = false
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
@@ -28,23 +32,34 @@ class BeforeYesterdayFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_yesterday, container, false)
+        _binding = BeforeYesterdayFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.getData(beforeYesterdayDate()).observe(viewLifecycleOwner, {
             renderData(it)
         })
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        binding.imageViewBeforeYesterday.setOnClickListener {    isExpanded = !isExpanded
+            BeginDelayedTransition(binding.beforeYesterdayFragment)
+            val params: ViewGroup.LayoutParams =  binding.imageViewBeforeYesterday.layoutParams
+            params.height =
+                if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.imageViewBeforeYesterday.layoutParams = params
+            binding.imageViewBeforeYesterday.scaleType =
+                if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
+        }
+    }
     private fun beforeYesterdayDate(): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DATE, -2)
         return formatter.format(calendar.time)
     }
-
     private fun renderData(data: PictureOfTheDayData) {
         when (data) {
             is PictureOfTheDayData.Success -> {
@@ -55,7 +70,7 @@ class BeforeYesterdayFragment : Fragment() {
                 if (url.isNullOrEmpty()) {
                     toast("Url is empty")
                 } else {
-                    val imageView = view?.findViewById<ImageView>(R.id.image_view_yesterday);
+                    val imageView = view?.findViewById<ImageView>(R.id.image_view_before_yesterday);
                     imageView?.load(url) {
                         lifecycle(this@BeforeYesterdayFragment)
                     }
@@ -76,16 +91,10 @@ class BeforeYesterdayFragment : Fragment() {
             }
         }
     }
-
     private fun Fragment.toast(string: String?) {
         Toast.makeText(context, string, Toast.LENGTH_SHORT).apply {
             setGravity(Gravity.BOTTOM, 0, 250)
             show()
         }
-    }
-
-
-    companion object {
-        fun newInstance() = BeforeYesterdayFragment()
     }
 }

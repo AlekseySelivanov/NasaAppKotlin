@@ -8,15 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.transition.ChangeBounds
-import androidx.transition.ChangeImageTransform
-import androidx.transition.TransitionManager
-import androidx.transition.TransitionSet
 import coil.api.load
 import com.example.nasaappkotlin.R
 import com.example.nasaappkotlin.databinding.FragmentTodayBinding
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayData
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayViewModel
+import com.example.nasaappkotlin.util.BeginDelayedTransition
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_today.*
 import kotlinx.android.synthetic.main.main_activity.*
@@ -24,7 +21,8 @@ import kotlinx.android.synthetic.main.main_fragment.*
 import java.util.*
 
 class TodayFragment : Fragment() {
-
+    private var _binding: FragmentTodayBinding? = null
+    private val binding get() = _binding!!
     private var isExpanded = false
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
@@ -34,7 +32,8 @@ class TodayFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_today, container, false)
+        _binding = FragmentTodayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -47,20 +46,20 @@ class TodayFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        image_view_today.setOnClickListener {    isExpanded = !isExpanded
-            TransitionManager.beginDelayedTransition(
-                    container, TransitionSet()
-                    .addTransition(ChangeBounds())
-                    .addTransition(ChangeImageTransform()))
-            val params: ViewGroup.LayoutParams = image_view_today.layoutParams
+        binding.imageViewToday.setOnClickListener {    isExpanded = !isExpanded
+            BeginDelayedTransition(binding.todayStart)
+            val params: ViewGroup.LayoutParams =  binding.imageViewToday.layoutParams
             params.height =
                     if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-            image_view_today.layoutParams = params
-            image_view_today.scaleType =
+            binding.imageViewToday.layoutParams = params
+            binding.imageViewToday.scaleType =
                     if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
-            // Почему-то возникает NPE
         }
     }
+
+
+
+
 
     private fun renderData(data: PictureOfTheDayData) {
         when (data) {
@@ -93,4 +92,5 @@ class TodayFragment : Fragment() {
             }
         }
     }
+
 }
