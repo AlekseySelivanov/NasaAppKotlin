@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/main2"
         android:layout_width="match_parent"
@@ -84,6 +85,16 @@
         app:layout_anchor="@id/bottom_app_bar"
         app:srcCompat="@drawable/ic_plus_fab"
         app:tint="#FFFFFF" />
+
+    <FrameLayout
+        android:id="@+id/main_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?actionBarSize"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_app_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

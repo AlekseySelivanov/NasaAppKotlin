@@ -10,13 +10,18 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import coil.api.load
 import com.example.nasaappkotlin.R
+import com.example.nasaappkotlin.databinding.FragmentTodayBinding
+import com.example.nasaappkotlin.databinding.FragmentYesterdayBinding
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayData
 import com.example.nasaappkotlin.ui.main.PictureOfTheDayViewModel
+import com.example.nasaappkotlin.util.BeginDelayedTransition
 import java.text.SimpleDateFormat
 import java.util.*
 
 class YesterdayFragment : Fragment() {
-
+    private var _binding: FragmentYesterdayBinding? = null
+    private val binding get() = _binding!!
+    private var isExpanded = false
     private val viewModel: PictureOfTheDayViewModel by lazy {
         ViewModelProvider(this).get(PictureOfTheDayViewModel::class.java)
     }
@@ -25,7 +30,8 @@ class YesterdayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_yesterday, container, false)
+        _binding = FragmentYesterdayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -33,6 +39,18 @@ class YesterdayFragment : Fragment() {
         viewModel.getData(yesterdayDate()).observe(viewLifecycleOwner, {
             renderData(it)
         })
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.imageViewYesterday.setOnClickListener {    isExpanded = !isExpanded
+            BeginDelayedTransition(binding.yesterdayFragment)
+            val params: ViewGroup.LayoutParams =  binding.imageViewYesterday.layoutParams
+            params.height =
+                if (isExpanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.imageViewYesterday.layoutParams = params
+            binding.imageViewYesterday.scaleType =
+                if (isExpanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
+        }
     }
 
     private fun renderData(data: PictureOfTheDayData) {

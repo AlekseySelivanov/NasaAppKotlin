@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/before_yesterday_fragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.nasaappkotlin.viewpager.BeforeYesterdayFragment">
 
@@ -11,5 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:srcCompat="@android:drawable/ic_menu_gallery" />
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_no_photo_vector" />
     <include layout="@layout/bottom_sheet_layout" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
