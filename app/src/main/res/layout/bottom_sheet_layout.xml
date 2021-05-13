@@ -26,22 +26,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:fontFamily="@font/biryani_extrabold"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
+        android:text="Explanation"
         android:textColor="#000"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line"
-        android:text="Explanation" />
+        app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_line" />
 
     <TextView
         android:id="@+id/bottom_sheet_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/biryani"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_description_header"/>
+        app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_description_header" />
 </androidx.constraintlayout.widget.ConstraintLayout>
