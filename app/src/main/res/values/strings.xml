@@ -20,4 +20,5 @@
     <string name="day_before_yesterday_text">Day before yesterday</string>
     <string name="yesterday_text">Yesterday</string>
     <string name="today_text">Today</string>
+    <string name="NameOfApp">NasaAppKotlin</string>
 </resources>
