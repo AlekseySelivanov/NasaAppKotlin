@@ -13,4 +13,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/padding_to_screen_edge</item>
     </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary_dark</item>
+        <item name="colorAccent">@color/design_default_color_secondary</item>
+    </style>
 </resources>
